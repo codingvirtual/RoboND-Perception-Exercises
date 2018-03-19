@@ -55,7 +55,7 @@ seg.set_distance_threshold(max_distance)
 inliers, coefficients = seg.segment()
 
 # Extract inliers
-extracted_inliers = cloud_filtered.extract(inliers, negative=True)
+extracted_inliers = cloud_filtered.extract(inliers, negative=False)
 filename = 'extracted_inliers.pcd'
 pcl.save(extracted_inliers, filename)
 
@@ -64,7 +64,9 @@ pcl.save(extracted_inliers, filename)
 
 
 # Extract outliers
-
+extracted_outliers = cloud_filtered.extract(inliers, negative=True)
+filename = 'extracted_outliers.pcd'
+pcl.save(extracted_outliers, filename)
 
 # Save pcd for tabletop objects
 
