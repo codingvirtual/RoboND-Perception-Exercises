@@ -55,7 +55,7 @@ seg.set_distance_threshold(max_distance)
 inliers, coefficients = seg.segment()
 
 # Extract inliers
-extracted_inliers = cloud_filtered.extract(inliers, negative=False)
+extracted_inliers = cloud_filtered.extract(inliers, negative=True)
 filename = 'extracted_inliers.pcd'
 pcl.save(extracted_inliers, filename)
 
