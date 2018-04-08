@@ -99,12 +99,14 @@ def pcl_callback(pcl_msg):
     cluster_cloud.from_list(color_cluster_point_list)
 
     # TODO: Convert PCL data to ROS messages
-    cluster_cloud_pcl = pcl_to_ros(cluster_cloud)
+    ros_cloud_objects = pcl_to_ros(cloud_objects)
+    ros_cloud_table = pcl_to_ros(cloud_table)
+    ros_cluster_cloud = pcl_to_ros(cluster_cloud)
 
     # TODO: Publish ROS messages
-    pcl_cluster_pub.publish(cluster_cloud_pcl)
-    pcl_objects_pub.publish(pcl_to_ros(cloud_objects))
-    pcl_table_pub.publish(pcl_to_ros(cloud_table))
+    pcl_cluster_pub.publish(ros_cluster_cloud)
+    pcl_objects_pub.publish(ros_cloud_objects)
+    pcl_table_pub.publish(ros_cloud_table)
 
 if __name__ == '__main__':
 
