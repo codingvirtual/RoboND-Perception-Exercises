@@ -102,7 +102,7 @@ def pcl_callback(pcl_msg):
     cluster_cloud_pcl = pcl_to_ros(cluster_cloud)
 
     # TODO: Publish ROS messages
-    pcl_objects_pub.publish(cluster_cloud_pcl)
+    pcl_cluster_pub.publish(cluster_cloud_pcl)
     pcl_objects_pub.publish(pcl_to_ros(cloud_objects))
     pcl_table_pub.publish(pcl_to_ros(cloud_table))
 
@@ -117,6 +117,7 @@ if __name__ == '__main__':
     # TODO: Create Publishers
     pcl_objects_pub = rospy.Publisher("/pcl_objects", PointCloud2, queue_size=1)
     pcl_table_pub = rospy.Publisher("/pcl_table", PointCloud2, queue_size=1)
+    pcl_cluster_pub = rospy.Publisher("/pcl_cluster", PointCloud2, queue_size=1)
 
     # Initialize color_list
     get_color_list.color_list = []
