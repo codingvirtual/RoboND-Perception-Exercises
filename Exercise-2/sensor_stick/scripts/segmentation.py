@@ -2,6 +2,7 @@
 
 # Import modules
 from pcl_helper import *
+import pcl
 
 # TODO: Define functions as required
 
@@ -9,15 +10,58 @@ from pcl_helper import *
 def pcl_callback(pcl_msg):
 
     # TODO: Convert ROS msg to PCL data
+    cloud = ros_to_pcl(pcl_msg)
 
-    # TODO: Voxel Grid Downsampling
+    # Voxel Grid filter
+    vox = cloud.make_voxel_grid_filter()
 
-    # TODO: PassThrough Filter
+    # Choose a voxel (also known as leaf) size
+    # Note: this (1) is a poor choice of leaf size
+    # Experiment and find the appropriate size!
+    LEAF_SIZE = .01
 
+    # Set the voxel (or leaf) size
+    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
 
-    # TODO: RANSAC Plane Segmentation
+    # Call the filter function to obtain the resultant downsampled point cloud
+    cloud_filtered = vox.filter()
 
-    # TODO: Extract inliers and outliers
+    # PassThrough filter
+    # Create a PassThrough filter object.
+    passthrough = cloud_filtered.make_passthrough_filter()
+
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'z'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = 0.6
+    axis_max = 1.1
+    passthrough.set_filter_limits(axis_min, axis_max)
+
+    # Finally use the filter function to obtain the resultant point cloud.
+    cloud_filtered = passthrough.filter()
+
+    # RANSAC plane segmentation
+    # Create the segmentation object
+    seg = cloud_filtered.make_segmenter()
+
+    # Set the model you wish to fit
+    seg.set_model_type(pcl.SACMODEL_PLANE)
+    seg.set_method_type(pcl.SAC_RANSAC)
+
+    # Max distance for a point to be considered fitting the model
+    # Experiment with different values for max_distance
+    # for segmenting the table
+    max_distance = .01
+    seg.set_distance_threshold(max_distance)
+
+    # Call the segment function to obtain set of inlier indices and model coefficients
+    inliers, coefficients = seg.segment()
+
+    # Extract inliers
+    ros_cloud_table = cloud_filtered.extract(inliers, negative=False)
+
+    # Extract outliers
+    ros_cloud_objects = cloud_filtered.extract(inliers, negative=True)
 
     # TODO: Euclidean Clustering
 
@@ -26,8 +70,8 @@ def pcl_callback(pcl_msg):
     # TODO: Convert PCL data to ROS messages
 
     # TODO: Publish ROS messages
-    pcl_objects_pub.publish(pcl_msg)
-    pcl_table_pub.publish(pcl_msg)
+    pcl_objects_pub.publish(pcl_to_ros(ros_cloud_objects))
+    pcl_table_pub.publish(pcl_to_ros(ros_cloud_table))
 
 if __name__ == '__main__':
 
