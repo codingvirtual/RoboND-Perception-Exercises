@@ -33,7 +33,7 @@ def pcl_callback(pcl_msg):
     # Assign axis and range to the passthrough filter object.
     filter_axis = 'z'
     passthrough.set_filter_field_name(filter_axis)
-    axis_min = 0.6
+    axis_min = 0.77
     axis_max = 1.1
     passthrough.set_filter_limits(axis_min, axis_max)
 
@@ -73,9 +73,9 @@ def pcl_callback(pcl_msg):
     # as well as minimum and maximum cluster size (in points)
     # NOTE: These are poor choices of clustering parameters
     # Your task is to experiment and find values that work for segmenting objects.
-    ec.set_ClusterTolerance(0.001)
-    ec.set_MinClusterSize(10)
-    ec.set_MaxClusterSize(250)
+    ec.set_ClusterTolerance(0.02)
+    ec.set_MinClusterSize(20)
+    ec.set_MaxClusterSize(2000)
     # Search the k-d tree for clusters
     ec.set_SearchMethod(tree)
     # Extract indices for each of the discovered clusters
