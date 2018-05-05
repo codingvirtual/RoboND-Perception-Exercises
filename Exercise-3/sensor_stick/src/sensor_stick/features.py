@@ -77,4 +77,4 @@ def compute_normal_histograms(normal_cloud):
     norm_features = np.concatenate((a_norm[0], b_norm[0], c_norm[0])).astype(np.float64)
     normed_hist_features = norm_features / np.sum(norm_features)
 
-    return normed_features
+    return normed_hist_features
